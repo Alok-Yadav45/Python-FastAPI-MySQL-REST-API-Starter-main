@@ -42,7 +42,7 @@ def get_user_by_verification_token(db: Session, token: str):
 def reset_password(db: Session, user: user_model.User, new_password: str):
     user.hashed_password = pwd_context.hash(new_password)
     user.reset_token = None
-    user.reset_token_expires = None
+    user.reset_token_expires = None                                                                                                    
     db.commit()
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
