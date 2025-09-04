@@ -18,7 +18,7 @@ def update_user(db: Session, user_id: int, user: user_schema.UserUpdate):
     if db_user is None:
         raise CustomException(message="User not found", status_code=status.HTTP_404_NOT_FOUND)
     return db_user
-
+ 
 def delete_user(db: Session, user_id: int):
     db_user = user_helper.delete_user(db, user_id=user_id)
     if db_user is None:
