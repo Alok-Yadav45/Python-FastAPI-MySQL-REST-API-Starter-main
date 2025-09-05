@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional, Union
 
 class ProductBase(BaseModel):
     sku: str
@@ -23,3 +24,20 @@ class ProductOut(ProductBase):
 
     class Config:
         from_attributes = True 
+
+class ProductResponse(BaseModel):
+    sku: str
+    name: str
+    description: Optional[str]
+    price: float
+    stock: int
+    category_id: int
+
+
+    class Config:
+        from_attributes = True
+
+class APIResponse(BaseModel):
+    success: bool
+    message: str
+    data: Union[ProductResponse, list[ProductResponse]]
