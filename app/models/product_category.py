@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from app.configs.database import Base
 from sqlalchemy.orm import relationship
 
@@ -6,8 +6,9 @@ from sqlalchemy.orm import relationship
 class Category(Base):
     __tablename__ = "categories"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), unique=True)
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255),nullable=False, unique=True)
+    parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
 
-    products = relationship("Product", back_populates="category")
+    children = relationship("Category", backref="parent", remote_side=[id])
 
