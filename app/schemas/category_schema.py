@@ -12,7 +12,7 @@ class CategoryUpdate(BaseModel):
     name: Optional[str] = None
     parent_id: Optional[int] = None
 
-class Categoryout(CategoryBase):
+class CategoryOut(CategoryBase):
     id: int
 
     class Config:
@@ -21,4 +21,4 @@ class Categoryout(CategoryBase):
 class APIResponse(BaseModel):
     success: bool
     message: str
-    data: Categoryout | list[Categoryout]
+    data: CategoryOut | list[CategoryOut]
