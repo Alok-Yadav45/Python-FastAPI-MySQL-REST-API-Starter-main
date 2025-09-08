@@ -10,6 +10,9 @@ from app.helpers.exceptions import CustomException
 from app.middleware.exception_handler_middleware import custom_exception_handler, validation_exception_handler, http_exception_handler
 from fastapi.exceptions import RequestValidationError, HTTPException
 from app.controllers import register_routers
+from fastapi.staticfiles import StaticFiles
+
+
 
 user_model.Base.metadata.create_all(bind=engine)
 
@@ -26,6 +29,8 @@ app = FastAPI(
 app.add_exception_handler(CustomException, custom_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(HTTPException, http_exception_handler)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
