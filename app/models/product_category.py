@@ -13,3 +13,8 @@ class Category(Base):
     children = relationship("Category", backref="parent", remote_side=[id])
 
     products = relationship("Product", back_populates="category")
+
+    images = relationship("CategoryImage", back_populates="category", cascade="all, delete-orphan") 
+     
+     
+
