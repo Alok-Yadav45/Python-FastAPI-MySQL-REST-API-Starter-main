@@ -17,5 +17,5 @@ class Product(Base):
 
     category = relationship("Category", back_populates="products")
 
-    images = relationship("ProductImage", back_populates="product", cascade="all, delete-orphan")
 
+    media = relationship("Media", back_populates="product", cascade="all, delete-orphan")
