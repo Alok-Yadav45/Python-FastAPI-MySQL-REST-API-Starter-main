@@ -9,8 +9,8 @@ from app.services import order_service
 router = APIRouter()
 
 @router.post("/orders", response_model=APIResponse[OrderOut])
-def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
-    return order_service.create_order(db, order_data)
+def add_order(order_data: OrderCreate, db: Session = Depends(get_db)):
+    return order_service.add_order(db, order_data)
 
 
 @router.get("/orders/{order_id}", response_model=APIResponse[OrderOut])

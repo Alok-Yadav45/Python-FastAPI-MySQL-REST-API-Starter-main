@@ -4,8 +4,8 @@ from datetime import datetime
 
 class OrderItemBase(BaseModel):
     product_id: int
-    quantity: int
-    price_at_purchase: float
+    product_quantity: int
+    product_price: float
 
 
 class OrderItemCreate(OrderItemBase):
@@ -14,6 +14,7 @@ class OrderItemCreate(OrderItemBase):
 
 class OrderItemOut(OrderItemBase):
     id: int
+    total_price: float
 
     class Config:
         orm_mode = True
@@ -22,6 +23,7 @@ class OrderItemOut(OrderItemBase):
 class OrderBase(BaseModel):
     user_id: int
     status: Optional[str] = "pending"
+    payment_id: Optional[str] = None
 
 
 class OrderCreate(OrderBase):
@@ -30,6 +32,7 @@ class OrderCreate(OrderBase):
 
 class OrderUpdate(BaseModel):
     status: Optional[str] = None
+    payment_id: Optional[str] = None
 
 
 class OrderOut(OrderBase):

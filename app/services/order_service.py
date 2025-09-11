@@ -1,23 +1,23 @@
 from sqlalchemy.orm import Session
 from app.models.order_model import Order, OrderItem
-from app.schemas.order_schema import OrderCreate, OrderUpdate
+from app.schemas.order_schema import OrderCreate, OrderUpdate, OrderItemCreate
 from app.helpers.response_helper import success_response
 from app.helpers.exceptions import CustomException
 from fastapi import status
 
 
-def create_order(db: Session, order_data: OrderCreate):
-    order = Order(user_id=order_data.user_id, status=order_data.status)
+def add_order(db: Session, order_data: OrderCreate):
+    order = Order(user_id=order_data.user_id, status=order_data.status or "pending")
 
     total = 0
     for item in order_data.items:
-        line_total = item.quantity * item.price_at_purchase
+        line_total = item.product_quantity * item.product_price
         total += line_total
         order.items.append(
             OrderItem(
                 product_id=item.product_id,
-                quantity=item.quantity,
-                price_at_purchase=item.price_at_purchase,
+                product_quantity=item.product_quantity,
+                total_price=line_total,
             )
         )
 
