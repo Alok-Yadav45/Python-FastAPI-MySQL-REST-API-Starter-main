@@ -24,7 +24,9 @@ def verify_access_token(db: Session = Depends(get_db), token: str = Security(api
             
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
-        if email is None:
+        user_id: int = payload.get("user_id")
+
+        if email is None or user_id is None:
             raise CustomException(message="Could not validate credentials", status_code=status.HTTP_401_UNAUTHORIZED)
         token_data = user_schema.TokenData(email=email)
     except JWTError:

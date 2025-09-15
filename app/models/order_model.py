@@ -14,7 +14,9 @@ class Order(Base):
     updated_at = Column(DateTime, server_default= func.now(), onupdate=func.now())
     
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
-
+    payments = relationship("Payment", back_populates="order", cascade="all, delete-orphan")
+    shipping = relationship("Shipping", back_populates="order", uselist=False, cascade="all, delete-orphan")  
+    
 
 
 
@@ -30,6 +32,7 @@ class OrderItem(Base):
 
     order = relationship("Order", back_populates="items")
 
+    product = relationship("Product", back_populates="order_items")  # ⬅️ Add this
 
 
 

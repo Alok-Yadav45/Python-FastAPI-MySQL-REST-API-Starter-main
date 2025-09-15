@@ -11,4 +11,5 @@ def role_checker(required_role: str):
                 status_code=status.HTTP_403_FORBIDDEN
             )
         return current_user
+        
     return check_role

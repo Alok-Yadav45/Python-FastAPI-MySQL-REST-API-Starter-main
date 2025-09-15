@@ -2,10 +2,10 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 
+
 class OrderItemBase(BaseModel):
     product_id: int
     product_quantity: int
-    product_price: float
 
 
 class OrderItemCreate(OrderItemBase):
@@ -14,19 +14,21 @@ class OrderItemCreate(OrderItemBase):
 
 class OrderItemOut(OrderItemBase):
     id: int
+    product_price: float
     total_price: float
 
     class Config:
         orm_mode = True
 
 
+
 class OrderBase(BaseModel):
-    user_id: int
     status: Optional[str] = "pending"
     payment_id: Optional[str] = None
 
 
-class OrderCreate(OrderBase):
+class OrderCreate(BaseModel):
+    
     items: List[OrderItemCreate]
 
 
@@ -37,10 +39,11 @@ class OrderUpdate(BaseModel):
 
 class OrderOut(OrderBase):
     id: int
+    user_id: int  
     total_amount: float
     created_at: datetime
     updated_at: datetime
     items: List[OrderItemOut] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
