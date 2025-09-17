@@ -9,7 +9,7 @@ class Payment(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
-    amount = Column(Float, nullable=False)
+    amount = Column(Float, nullable=False) 
     currency = Column(String(10), default="USD")
     status = Column(String(50), default="pending")  
     transaction_id = Column(String(100), nullable=True)
