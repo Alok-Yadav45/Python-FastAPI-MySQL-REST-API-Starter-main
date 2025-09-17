@@ -23,3 +23,4 @@ class User(Base):
 
     orders = relationship("Order", backref="user", cascade="all, delete-orphan")
     reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")
+    payments = relationship("Payment", back_populates="user")

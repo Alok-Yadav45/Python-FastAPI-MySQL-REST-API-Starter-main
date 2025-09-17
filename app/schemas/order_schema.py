@@ -39,7 +39,6 @@ class OrderUpdate(BaseModel):
 
 class OrderOut(OrderBase):
     id: int
-    user_id: int  
     total_amount: float
     created_at: datetime
     updated_at: datetime

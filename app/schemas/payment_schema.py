@@ -7,19 +7,20 @@ class PaymentBase(BaseModel):
     order_id: int
     amount: float
     currency: str = "INR"
-    status: str = "pending"
-    transaction_id: Optional[str] = None
+    method: str
 
 
 class PaymentCreate(PaymentBase):
-    user_id: int
+    pass
 
 
 class PaymentOut(PaymentBase):
     id: int
-    user_id: int
+    status: str               
+    transaction_id: str | None
     created_at: datetime
     updated_at: datetime
+  
 
     class Config:
         from_attributes = True
