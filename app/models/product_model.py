@@ -21,3 +21,5 @@ class Product(Base):
     media = relationship("Media", back_populates="product", cascade="all, delete-orphan")
     reviews = relationship("Review", back_populates="product", cascade="all, delete-orphan")
     order_items = relationship("OrderItem", back_populates="product", cascade="all, delete-orphan")
+    inventory = relationship("ProductInventory", back_populates="product", uselist=False)
+    inventory_logs = relationship("InventoryHistory", back_populates="product")
