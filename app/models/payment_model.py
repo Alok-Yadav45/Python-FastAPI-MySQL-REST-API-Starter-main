@@ -10,10 +10,12 @@ class Payment(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     amount = Column(Float, nullable=False) 
-    currency = Column(String(10), default="USD")
+    currency = Column(String(10), default="INR")
+    method = Column(String(20), nullable=False)
     status = Column(String(50), default="pending")  
     transaction_id = Column(String(100), nullable=True)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
     order = relationship("Order", back_populates="payments")
+    user = relationship("User", back_populates="payments")

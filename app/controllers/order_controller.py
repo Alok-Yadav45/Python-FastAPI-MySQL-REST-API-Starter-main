@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.configs.database import get_db
 from app.schemas.order_schema import OrderCreate, OrderOut, OrderUpdate
+from app.schemas import user_schema
 from app.schemas.media_schema import APIResponse
 from app.services import order_service
 from app.middleware.verify_access_token import verify_access_token  
@@ -13,10 +14,9 @@ router = APIRouter()
 def add_order(
     order_data: OrderCreate,
     db: Session = Depends(get_db),
-    token_data: dict = Depends(verify_access_token)
+    current_user: user_schema.User = Depends(verify_access_token)
 ):
-    user_id = token_data["user_id"]
-    return order_service.add_order(db, order_data, user_id)
+    return order_service.add_order(db, order_data, current_user)
 
 
 @router.get("/orders/{order_id}", response_model=APIResponse[OrderOut])
