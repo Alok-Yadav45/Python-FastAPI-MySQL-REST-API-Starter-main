@@ -7,7 +7,7 @@ class CartBase(BaseModel):
 
 
 class CartCreate(CartBase):
-    user_id: int
+    pass 
 
 
 class CartUpdate(BaseModel):
@@ -21,4 +21,4 @@ class CartOut(CartBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+       from_attributes: True

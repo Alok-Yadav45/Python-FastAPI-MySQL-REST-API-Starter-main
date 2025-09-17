@@ -5,9 +5,9 @@ from app.helpers.exceptions import CustomException
 from fastapi import status
 
 
-def add_to_cart(db: Session, cart_data):
+def add_to_cart(db: Session, cart_data, user_id: int):
     cart_item = db.query(Cart).filter(
-        Cart.user_id == cart_data.user_id,
+        Cart.user_id == user_id,
         Cart.product_id == cart_data.product_id
     ).first()
 
@@ -15,8 +15,8 @@ def add_to_cart(db: Session, cart_data):
         cart_item.product_quantity += cart_data.product_quantity
     else:
         cart_item = Cart(
-            user_id=cart_data.user_id,
-            product_id=cart_data.product_id,
+            user_id= user_id,
+            product_id= cart_data.product_id,
             product_quantity=cart_data.product_quantity,
         )
         db.add(cart_item)

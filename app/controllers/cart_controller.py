@@ -5,14 +5,16 @@ from app.configs.database import get_db
 from app.schemas.cart_schema import CartCreate, CartUpdate, CartOut
 from app.schemas.media_schema import APIResponse
 from app.services import cart_service
+from app.middleware.verify_access_token import verify_access_token
 
 router = APIRouter()
 
 @router.post("/carts", response_model=APIResponse[CartOut])
-def add_to_cart(cart_data: CartCreate, db: Session = Depends(get_db)):
-    return cart_service.add_to_cart(db, cart_data)
+def add_to_cart(cart_data: CartCreate, db: Session = Depends(get_db), token_data: dict = Depends(verify_access_token)):
+    user_id = token_data["user_id"]
+    return cart_service.add_to_cart(db, cart_data, user_id)
 
-
+ 
 @router.get("/carts/{user_id}", response_model=APIResponse[List[CartOut]])
 def list_cart(user_id: int, db: Session = Depends(get_db)):
     return cart_service.list_cart(db, user_id)

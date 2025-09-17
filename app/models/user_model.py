@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, func, Boolean
 from app.configs.database import Base
+from sqlalchemy.orm import relationship
+
 
 class User(Base):
     __tablename__ = "users"
@@ -17,3 +19,7 @@ class User(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     reset_token = Column(String(255), nullable=True)
     reset_token_expires = Column(DateTime, nullable=True)
+
+
+    orders = relationship("Order", backref="user", cascade="all, delete-orphan")
+    reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")
