@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, func, Boolean, ForeignKey
 from app.configs.database import Base
 from sqlalchemy.orm import relationship
 
@@ -12,7 +12,7 @@ class User(Base):
     email = Column(String(100), unique=True, index=True)
     hashed_password = Column(String(255))
     role = Column(String(50), default="user")
-    status = Column(String(50), default="active")
+    # status = Column(String(50), default="active")
     is_verified = Column(Boolean, default=False)
     verification_token = Column(String(255), nullable=True)
     created_at = Column(DateTime, default=func.now())
@@ -20,7 +20,10 @@ class User(Base):
     reset_token = Column(String(255), nullable=True)
     reset_token_expires = Column(DateTime, nullable=True)
 
+    role_id = Column(Integer, ForeignKey("roles.id"), nullable=True)
 
+
+    role = relationship("Role", back_populates="user")
     orders = relationship("Order", backref="user", cascade="all, delete-orphan")
     reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")
     payments = relationship("Payment", back_populates="user")
