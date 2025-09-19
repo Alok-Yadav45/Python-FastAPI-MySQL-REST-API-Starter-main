@@ -1,55 +1,53 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
-from app.models.product_inventory_model import ProductInventory
-from app.models.inventory_history_model import InventoryHistory
-from app.schemas.product_inventory_schema import ProductInventoryCreate
+from app.helpers import product_inventory_helper
+from app.helpers.response_helper import success_response
+from app.schemas.product_inventory_schema import ProductInventoryCreate, ProductInventoryOut
+from app.schemas.inventory_history_schema import InventoryHistoryOut
+
 
 def create_inventory(db: Session, data: ProductInventoryCreate):
-    inventory = ProductInventory(product_id=data.product_id, stock=data.stock)
-    db.add(inventory)
-    db.commit()
-    db.refresh(inventory)
-    return inventory
+    inventory = product_inventory_helper.create_inventory(db, data.product_id, data.stock)
+    return success_response(
+        data=ProductInventoryOut.from_orm(inventory),
+        message="Inventory created successfully"
+    )
+
 
 def place_order(db: Session, product_id: int, quantity: int):
-    inventory = db.query(ProductInventory).filter_by(product_id=product_id).first()
-    if not inventory or inventory.stock < quantity:
-        raise HTTPException(status_code=400, detail="Insufficient stock")
+    inventory = product_inventory_helper.update_stock(db, product_id, -quantity, "order")
+    return success_response(
+        data=ProductInventoryOut.from_orm(inventory),
+        message="Stock reduced for order"
+    )
 
-    inventory.stock -= quantity
-    db.add(InventoryHistory(product_id=product_id, change=-quantity, action="order"))
-    db.commit()
-    db.refresh(inventory)
-    return inventory
 
 def cancel_or_return_order(db: Session, product_id: int, quantity: int):
-    inventory = db.query(ProductInventory).filter_by(product_id=product_id).first()
-    if not inventory:
-        raise HTTPException(status_code=404, detail="Inventory not found")
+    inventory = product_inventory_helper.update_stock(db, product_id, quantity, "cancel/return")
+    return success_response(
+        data=ProductInventoryOut.from_orm(inventory),
+        message="Stock increased due to cancellation/return"
+    )
 
-    inventory.stock += quantity
-    db.add(InventoryHistory(product_id=product_id, change=quantity, action="cancel"))
-    db.commit()
-    db.refresh(inventory)
-    return inventory
 
 def restock(db: Session, product_id: int, quantity: int):
-    inventory = db.query(ProductInventory).filter_by(product_id=product_id).first()
-    if not inventory:
-        raise HTTPException(status_code=404, detail="Inventory not found")
+    inventory = product_inventory_helper.update_stock(db, product_id, quantity, "restock")
+    return success_response(
+        data=ProductInventoryOut.from_orm(inventory),
+        message="Product restocked successfully"
+    )
 
-    inventory.stock += quantity
-    db.add(InventoryHistory(product_id=product_id, change=quantity, action="restock"))
-    db.commit()
-    db.refresh(inventory)
-    return inventory
 
 def get_inventory(db: Session, product_id: int):
-    inventory = db.query(ProductInventory).filter_by(product_id=product_id).first()
-    if not inventory:
-        raise HTTPException(status_code=404, detail="Inventory not found")
-    return inventory
+    inventory = product_inventory_helper.get_inventory_by_product(db, product_id)
+    return success_response(
+        data=ProductInventoryOut.from_orm(inventory),
+        message="Inventory retrieved successfully"
+    )
+
 
 def get_inventory_history(db: Session, product_id: int):
-    return db.query(InventoryHistory).filter_by(product_id=product_id).all()
-
+    history = product_inventory_helper.get_inventory_history(db, product_id)
+    return success_response(
+        data=[InventoryHistoryOut.from_orm(h) for h in history],
+        message="Inventory history retrieved successfully"
+    )
