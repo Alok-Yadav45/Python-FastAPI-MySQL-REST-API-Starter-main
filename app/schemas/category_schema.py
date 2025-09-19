@@ -1,24 +1,24 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 
+
 class CategoryBase(BaseModel):
-    name: str
+    name: str = Field(..., min_length=1)
     parent_id: Optional[int] = None
+
 
 class CategoryCreate(CategoryBase):
-    pass 
+    pass
+
 
 class CategoryUpdate(BaseModel):
-    name: Optional[str] = None
+    name: Optional[str] = Field(None, min_length=1)
     parent_id: Optional[int] = None
 
-class CategoryOut(CategoryBase):
+
+class Category(CategoryBase):
     id: int
+    children: List["Category"] = []
 
     class Config:
         from_attributes = True
-
-class APIResponse(BaseModel):
-    success: bool
-    message: str
-    data: CategoryOut | list[CategoryOut]

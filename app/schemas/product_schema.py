@@ -1,43 +1,31 @@
-from pydantic import BaseModel
-from typing import Optional, Union
+from pydantic import BaseModel, Field
+from typing import Optional, List
+
 
 class ProductBase(BaseModel):
     sku: str
     name: str
-    description: str
+    description: Optional[str] = None
     price: float
     stock: int
     category_id: int
 
+
 class ProductCreate(ProductBase):
-    pass 
+    pass
+
 
 class ProductUpdate(BaseModel):
-    name: str | None = None
-    description: str | None = None
-    price: float | None = None
-    stock: int | None = None
-    category_id: int | None = None 
+    sku: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    stock: Optional[int] = None
+    category_id: Optional[int] = None
 
-class ProductOut(ProductBase):
+
+class Product(ProductBase):
     id: int
 
     class Config:
-        from_attributes = True 
-
-class ProductResponse(BaseModel):
-    sku: str
-    name: str
-    description: Optional[str]
-    price: float
-    stock: int
-    category_id: int
-
-
-    class Config:
         from_attributes = True
-
-class APIResponse(BaseModel):
-    success: bool
-    message: str
-    data: Union[ProductResponse, list[ProductResponse]]

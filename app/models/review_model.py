@@ -14,4 +14,4 @@ class Review(Base):
 
 
     user = relationship("User", back_populates="reviews")
-    product = relationship("Product", back_populates="reviews")  # ⬅️ Must match Product.reviews
+    product = relationship("Product", back_populates="reviews") 

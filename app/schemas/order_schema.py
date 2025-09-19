@@ -21,14 +21,12 @@ class OrderItemOut(OrderItemBase):
         from_attributes = True
 
 
-
 class OrderBase(BaseModel):
     status: Optional[str] = "pending"
     payment_id: Optional[str] = None
 
 
 class OrderCreate(BaseModel):
-    
     items: List[OrderItemCreate]
 
 

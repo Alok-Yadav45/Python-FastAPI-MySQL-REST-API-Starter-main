@@ -1,13 +1,14 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+
 class CartBase(BaseModel):
     product_id: int
     product_quantity: int
 
 
 class CartCreate(CartBase):
-    pass 
+    pass
 
 
 class CartUpdate(BaseModel):
@@ -21,4 +22,4 @@ class CartOut(CartBase):
     updated_at: datetime
 
     class Config:
-       from_attributes = True
+        from_attributes = True

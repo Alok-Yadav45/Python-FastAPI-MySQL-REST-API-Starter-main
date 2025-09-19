@@ -1,26 +1,28 @@
 from sqlalchemy.orm import Session
-from app.models.role_model import Role
-from app.models.user_model import User
-from app.schemas.role_schema import RoleCreate
+from app.helpers import role_helper
+from app.helpers.response_helper import success_response
+from app.schemas.role_schema import RoleCreate, RoleOut
+
 
 def create_role(db: Session, role: RoleCreate):
-    db_role = Role(role=role.role)
-    db.add(db_role)
-    db.commit()
-    db.refresh(db_role)
-    return db_role
+    new_role = role_helper.create_role(db, role.role)
+    return success_response(
+        data=RoleOut.from_orm(new_role),
+        message="Role created successfully"
+    )
+
 
 def get_roles(db: Session):
-    return db.query(Role).all()
+    roles = role_helper.get_roles(db)
+    return success_response(
+        data=[RoleOut.from_orm(r) for r in roles],
+        message="Roles retrieved successfully"
+    )
+
 
 def assign_role(db: Session, user_id: int, role_id: int):
-    user = db.query(User).filter(User.id == user_id).first()
-    role = db.query(Role).filter(Role.id == role_id).first()
-
-    if not user or not role:
-        return None
-
-    user.role_id = role.id
-    db.commit()
-    db.refresh(user)
-    return user
+    updated_user = role_helper.assign_role(db, user_id, role_id)
+    return success_response(
+        data={"user_id": updated_user.id, "role": updated_user.role.role},
+        message="Role assigned successfully"
+    )
