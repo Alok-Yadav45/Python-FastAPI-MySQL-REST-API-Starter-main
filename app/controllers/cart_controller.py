@@ -8,7 +8,7 @@ from app.services import cart_service
 from app.middleware.verify_access_token import verify_access_token
 from app.middleware.role_checker import role_checker
 
-router = APIRouter(prefix="/carts", tags=["Carts"])
+router = APIRouter()
 
 
 @router.post("/", response_model=SingleResponse[CartOut])
@@ -22,6 +22,7 @@ def add_to_cart(
 
 @router.get("/", response_model=ListResponse[CartOut])
 def list_cart(
+    skip: int = 0, limit: int = 100,
     db: Session = Depends(get_db),
     token_data: dict = Depends(verify_access_token)
 ):
@@ -34,6 +35,7 @@ def list_cart(
     dependencies=[Depends(role_checker(["admin"]))]
 )
 def list_all_carts(
+    skip: int = 0, limit: int = 100,
     db: Session = Depends(get_db)
 ):
     """Admin only: list all carts"""

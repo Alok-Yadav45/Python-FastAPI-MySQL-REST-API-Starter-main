@@ -6,7 +6,7 @@ from app.services import review_service
 from app.middleware.verify_access_token import verify_access_token
 from app.middleware.role_checker import role_checker
 
-router = APIRouter(prefix="/reviews", tags=["Reviews"])
+router = APIRouter()
 
 
 @router.post("/", response_model=dict)

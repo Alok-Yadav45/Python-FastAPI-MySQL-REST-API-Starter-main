@@ -1,4 +1,6 @@
 from pydantic import BaseModel, Field, validator
+from typing import Optional
+from .role_schema import RoleOut
 
 class UserCreate(BaseModel):
     first_name: str = Field(..., min_length=1, error_messages={"min_length": "First name cannot be empty"})
@@ -17,7 +19,7 @@ class User(BaseModel):
     first_name: str
     last_name: str
     email: str
-    role: str
+    role: Optional[RoleOut] = None
     status: str
     is_verified: bool
 

@@ -9,7 +9,7 @@ from app.middleware.role_checker import role_checker
 from app.schemas.response_schema import SingleResponse, ListResponse
 
 
-router = APIRouter(prefix="/orders", tags=["Orders"])
+router = APIRouter()
 
 
 @router.post("/", response_model=SingleResponse[OrderOut])
@@ -32,6 +32,7 @@ def get_order(
 
 @router.get("/", response_model=ListResponse[OrderOut])
 def list_orders(
+    skip: int = 0, limit: int = 100,
     db: Session = Depends(get_db),
     token_data: dict = Depends(verify_access_token)
 ):

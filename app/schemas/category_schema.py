@@ -18,7 +18,11 @@ class CategoryUpdate(BaseModel):
 
 class Category(CategoryBase):
     id: int
-    children: List["Category"] = []
+    children: List["Category"] = Field(default_factory=list)  
 
     class Config:
         from_attributes = True
+
+
+
+Category.model_rebuild()

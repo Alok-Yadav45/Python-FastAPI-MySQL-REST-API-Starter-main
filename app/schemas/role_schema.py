@@ -8,6 +8,7 @@ class RoleCreate(RoleBase):
 
 class RoleOut(RoleBase):
     id: int
-
+    role: str
+    
     class Config:
         from_attributes = True
