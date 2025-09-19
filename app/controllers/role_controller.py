@@ -6,7 +6,7 @@ from app.services import role_service
 from app.middleware.verify_access_token import verify_access_token
 from app.middleware.role_checker import role_checker
 
-router = APIRouter(prefix="/roles", tags=["Roles"])
+router = APIRouter()
 
 
 @router.post("/", response_model=dict, dependencies=[Depends(role_checker(["admin"]))])
@@ -21,6 +21,7 @@ def create_role(
 
 @router.get("/", response_model=dict, dependencies=[Depends(role_checker(["admin"]))])
 def get_roles(
+    skip: int = 0, limit: int = 100,
     db: Session = Depends(get_db),
     token_data: dict = Depends(verify_access_token)
 ):

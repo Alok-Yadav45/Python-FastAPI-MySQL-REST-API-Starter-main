@@ -6,7 +6,7 @@ from app.services import product_inventory_service
 from app.middleware.verify_access_token import verify_access_token
 from app.middleware.role_checker import role_checker
 
-router = APIRouter(prefix="/inventory", tags=["Inventory"])
+router = APIRouter()
 
 
 @router.post("/", response_model=dict, dependencies=[Depends(role_checker(["admin"]))])

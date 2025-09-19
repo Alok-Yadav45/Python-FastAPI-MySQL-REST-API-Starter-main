@@ -7,7 +7,7 @@ from app.services import shipping_service
 from app.middleware.verify_access_token import verify_access_token
 from app.middleware.role_checker import role_checker
 
-router = APIRouter(prefix="/shipping", tags=["Shipping"])
+router = APIRouter()
 
 
 @router.post("/", response_model=dict, dependencies=[Depends(role_checker(["admin"]))])
@@ -35,6 +35,7 @@ def get_shipping(
 
 @router.get("/", response_model=dict, dependencies=[Depends(role_checker(["admin"]))])
 def list_shipping(
+    skip: int = 0, limit: int = 100,
     db: Session = Depends(get_db),
     token_data: dict = Depends(verify_access_token)
 ):

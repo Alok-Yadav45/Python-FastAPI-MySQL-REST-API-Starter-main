@@ -5,7 +5,7 @@ from app.services import checkout_service
 from app.middleware.verify_access_token import verify_access_token
 from app.schemas.payment_schema import PaymentCreate
 
-router = APIRouter(prefix="/checkout", tags=["Checkout"])
+router = APIRouter()
 
 
 @router.post("/")
