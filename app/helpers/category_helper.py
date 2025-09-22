@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from ..models.product_category import Category
 from ..schemas.category_schema import CategoryCreate, CategoryUpdate
 
@@ -8,7 +8,7 @@ def get_category(db: Session, category_id: int):
 
 
 def get_categories(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Category).offset(skip).limit(limit).all()
+    return db.query(Category).options(joinedload(Category.children)).offset(skip).limit(limit).all()
 
 
 def create_category(db: Session, category_data: CategoryCreate):

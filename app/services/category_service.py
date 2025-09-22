@@ -6,7 +6,8 @@ from ..helpers.exceptions import CustomException
 
 
 def get_categories(db: Session, skip: int = 0, limit: int = 100):
-    return category_helper.get_categories(db, skip=skip, limit=limit)
+    categories = category_helper.get_categories(db, skip=skip, limit=limit)
+    return build_category_tree(categories)
 
 
 def get_category(db: Session, category_id: int):
@@ -32,3 +33,17 @@ def delete_category(db: Session, category_id: int):
     if not category:
         raise CustomException("Category not found", status.HTTP_404_NOT_FOUND)
     return category_helper.delete_category(db, category)
+
+def build_category_tree(categories):
+    category_map = {c.id: c for c in categories}
+
+    root_categories = []
+    for category in categories:
+        if category.parent_id:
+            parent = category_map.get(category.parent_id)
+            if parent:
+                parent.children.append(category)
+        else:
+            root_categories.append(category)
+
+    return root_categories
