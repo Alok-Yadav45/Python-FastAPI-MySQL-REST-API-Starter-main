@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from typing import Optional
 from fastapi import status
 from ..helpers import product_helper
 from ..schemas import product_schema
@@ -39,3 +40,26 @@ def delete_product(db: Session, product_id: int):
     if not product:
         raise CustomException("Product not found", status.HTTP_404_NOT_FOUND)
     return product_helper.delete_product(db, product)
+
+def search_products(db: Session, query_text: str, skip: int = 0, limit: int = 100):
+    return product_helper.search_products(db=db, query_text=query_text, skip=skip, limit=limit)
+
+
+def filter_products(
+    db: Session,
+    category_id: Optional[int] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    in_stock: Optional[bool] = None,
+    skip: int = 0,
+    limit: int = 100
+):
+    return product_helper.filter_products(
+        db=db,
+        category_id=category_id,
+        min_price=min_price,
+        max_price=max_price,
+        in_stock=in_stock,
+        skip=skip,
+        limit=limit
+    )
