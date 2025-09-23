@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from app.configs.database import get_db
 from app.schemas import product_schema, response_schema
 from app.services import product_service
@@ -42,3 +42,36 @@ def update_product(product_id: int, updates: product_schema.ProductUpdate,
 def delete_product(product_id: int, db: Session = Depends(get_db), current_user=Depends(verify_access_token)):
     deleted_product = product_service.delete_product(db, product_id)
     return success_response(data=product_schema.Product.from_orm(deleted_product))
+
+@router.get("/search", response_model=response_schema.ListResponse[product_schema.Product],
+            dependencies=[Depends(role_checker("admin"))])
+def search_products(
+    query: str,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    products = product_service.search_products(db=db, query_text=query, skip=skip, limit=limit)
+    return success_response(data=[product_schema.Product.from_orm(p) for p in products])
+
+@router.get("/filter", response_model=response_schema.ListResponse[product_schema.Product],
+            dependencies=[Depends(role_checker("admin"))])
+def filter_products(
+    category_id: Optional[int] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    in_stock: Optional[bool] = None,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    products = product_service.filter_products(
+        db=db,
+        category_id=category_id,
+        min_price=min_price,
+        max_price=max_price,
+        in_stock=in_stock,
+        skip=skip,
+        limit=limit
+    )
+    return success_response(data=[product_schema.Product.from_orm(p) for p in products])

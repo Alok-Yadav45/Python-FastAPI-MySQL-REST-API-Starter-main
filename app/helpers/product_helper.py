@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from ..models.product_model import Product
 from ..models.product_category import Category
 from ..schemas.product_schema import ProductCreate, ProductUpdate
+from typing import Optional, List
+from sqlalchemy import or_ 
 
 
 def get_product(db: Session, product_id: int):
@@ -39,3 +41,41 @@ def delete_product(db: Session, product: Product):
     db.delete(product)
     db.commit()
     return product
+
+
+def search_products(db: Session, query_text: str, skip: int = 0, limit: int = 100) -> List[Product]:
+    query = db.query(Product).join(Category, isouter=True)
+
+    query = query.filter(
+        or_(
+            Product.name.ilike(f"%{query_text}%"),
+            Product.sku.ilike(f"%{query_text}%"),
+            Category.name.ilike(f"%{query_text}%")
+        )
+    )
+
+    return query.offset(skip).limit(limit).all()
+
+def filter_products(
+    db: Session,
+    category_id: Optional[int] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    in_stock: Optional[bool] = None,
+    skip: int = 0,
+    limit: int = 100
+) -> List[Product]:
+    query = db.query(Product)
+
+    if category_id:
+        query = query.filter(Product.category_id == category_id)
+    if min_price is not None:
+        query = query.filter(Product.price >= min_price)
+    if max_price is not None:
+        query = query.filter(Product.price <= max_price)
+    if in_stock is True:
+        query = query.filter(Product.stock > 0)
+    elif in_stock is False:
+        query = query.filter(Product.stock == 0)
+
+    return query.offset(skip).limit(limit).all()
