@@ -47,7 +47,6 @@ def create_order_from_cart(db: Session, user_id: int) -> Order:
     order.total_amount = total_amount
     db.add(order)
 
-    # clear cart after creating order
     for cart in cart_items:
         db.delete(cart)
 

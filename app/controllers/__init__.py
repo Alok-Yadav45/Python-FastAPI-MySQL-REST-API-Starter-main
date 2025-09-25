@@ -1,4 +1,4 @@
-from . import common_controller, auth_controller, user_controller, product_controller, category_controller,  media_controller, order_controller, cart_controller, checkout_controller, shipping_controller, review_controller, product_inventory_controller, role_controller
+from . import common_controller, auth_controller, user_controller, product_controller, category_controller,  media_controller, order_controller, cart_controller, checkout_controller, shipping_controller, review_controller, product_inventory_controller, role_controller, chat_support_controller
 
 def register_routers(app):
     app.include_router(common_controller.router, prefix="/api")
@@ -13,4 +13,5 @@ def register_routers(app):
     app.include_router(shipping_controller.router, prefix="/api", tags=["Shipping"])
     app.include_router(review_controller.router, prefix="/api", tags=["Reviews"])
     app.include_router(product_inventory_controller.router, prefix="/inventory", tags=["Inventory"])
-    app.include_router(role_controller.router, prefix="/role", tags=["Role"])
+    app.include_router(role_controller.router, prefix="/api/role", tags=["Role"])
+    app.include_router(chat_support_controller.router, prefix="/api/chat", tags=["Chat"])
